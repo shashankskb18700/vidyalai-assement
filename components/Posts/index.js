@@ -34,6 +34,7 @@ const LoadMoreButton = styled.button(() => ({
 
 export default function Posts() {
   const [posts, setPosts] = useState([]);
+  const [limitPost, setLimitPost] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
   const { isSmallerDevice } = useWindowWidth();
@@ -44,6 +45,7 @@ export default function Posts() {
         params: { start: 0, limit: isSmallerDevice ? 5 : 10 },
       });
       setPosts(posts);
+      setLimitPost(isSmallerDevice ? 5 : 10);
     };
 
     fetchPost();
@@ -52,9 +54,17 @@ export default function Posts() {
   const handleClick = () => {
     setIsLoading(true);
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+    const fetchPost = async () => {
+      const { data: posts } = await axios.get('/api/v1/posts', {
+        params: { start: 0, limit: limitPost + 5 },
+      });
+      setPosts(posts);
+      setLimitPost(limitPost + 5);
+    };
+
+    fetchPost();
+
+    limitPost == posts.length ? setIsLoading(false) : '';
   };
 
   return (

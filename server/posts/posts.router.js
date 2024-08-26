@@ -5,7 +5,7 @@ const { fetchUserById } = require('../users/users.service');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const posts = await fetchPosts();
+  const posts = await fetchPosts(req.query);
   const getImg = await getImage(posts);
 
   let counter = -1;
